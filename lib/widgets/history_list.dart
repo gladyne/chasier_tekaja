@@ -4,34 +4,60 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HistoryList extends StatelessWidget {
-  void httRequest() async {
-    var response =
+  Future<List<dynamic>> _fetcTransaction() async {
+    final response =
         await http.get(Uri.parse('http://10.0.2.2:5000/api/transaction'));
-    var hasil = json.decode(response.body);
-    print(hasil[0]['custName']);
+    if (response.statusCode == 200) {
+      final result = json.decode(response.body);
+      return result;
+    } else {
+      throw Exception('Unexpected error occured');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Text(
-            "Hai",
-            style: TextStyle(
-              fontSize: 50,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            httRequest();
-          },
-          child: Text('Test'),
-        ),
-      ],
+    return FutureBuilder(
+      future: _fetcTransaction(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          if (snapshot.hasData) {
+            List<dynamic> data = snapshot.data as List<dynamic>;
+            return Expanded(
+              child: ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          child: Center(
+                            child: Text('Rp.${data[index]['total']}'),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Text(data[index]['_id']),
+                            Text(data[index]['createdAt'].toString()),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            return Text("${snapshot.error}");
+          }
+        }
+      },
     );
   }
 }

@@ -29,7 +29,11 @@ class _HomePageState extends State<_HomePage> {
       appBar: AppBar(
         title: Text("Chasier APP"),
       ),
-      body: HistoryList(),
+      body: Column(
+        children: [
+          HistoryList(),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {});
