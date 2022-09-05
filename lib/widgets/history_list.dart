@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HistoryList extends StatelessWidget {
   Future<List<dynamic>> _fetcTransaction() async {
@@ -42,9 +43,16 @@ class HistoryList extends StatelessWidget {
                           ),
                         ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(data[index]['_id']),
-                            Text(data[index]['createdAt'].toString()),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              DateFormat().format(
+                                  DateTime.parse(data[index]['createdAt'])),
+                            ),
                           ],
                         )
                       ],

@@ -1,4 +1,5 @@
 import 'package:cashier_tekaja/widgets/history_list.dart';
+import 'package:cashier_tekaja/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(App());
@@ -22,6 +23,13 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> {
+  void _startNewTransaction() {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => NewTransaction(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("build");
@@ -36,7 +44,7 @@ class _HomePageState extends State<_HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {});
+          _startNewTransaction();
         },
         child: Icon(Icons.add),
       ),
