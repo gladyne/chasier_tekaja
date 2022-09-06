@@ -18,6 +18,7 @@ class HistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('testing');
     return FutureBuilder(
       future: _fetcTransaction(),
       builder: (context, snapshot) {
