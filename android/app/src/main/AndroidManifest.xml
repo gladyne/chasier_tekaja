@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cashier_tekaja">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="cashier_tekaja"
         android:name="${applicationName}"

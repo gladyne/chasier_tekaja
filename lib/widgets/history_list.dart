@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 
 class HistoryList extends StatelessWidget {
   Future<List<dynamic>> _fetcTransaction() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:5000/api/transaction'));
+    final response = await http
+        .get(Uri.parse('https://dompetsantri.herokuapp.com/api/transaction'));
     if (response.statusCode == 200) {
       final result = json.decode(response.body);
       return result;
