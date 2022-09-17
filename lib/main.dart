@@ -56,72 +56,108 @@ class _HomePageState extends State<_HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
+    final mediaQueryHight = MediaQuery.of(context).size.height;
+    final mediaQueryWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(left: 20, top: 40),
-            child: Text(
-              'Dompet Santri',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            height: mediaQueryHight * 0.13,
+            width: mediaQueryWidth * 0.6,
+            margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
+            child: LayoutBuilder(builder: (context, constraint) {
+              return const FittedBox(
+                child: Text(
+                  'Dompet Santri',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }),
           ),
           Container(
-            height: 199,
+            height: mediaQueryHight * 0.25,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
             width: double.infinity,
-            margin: EdgeInsets.all(20),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Basith',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Text('Saldo:',
-                    style: TextStyle(fontSize: 15, color: Colors.white)),
-                SizedBox(
-                  height: 15,
-                ),
-                Text('Rp. 5.000.000',
-                    style: TextStyle(fontSize: 27, color: Colors.white)),
-              ],
-            ),
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(color: Colors.blue),
+            child: LayoutBuilder(builder: (context, constraint) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: constraint.maxHeight * 0.15,
+                    child: FittedBox(
+                      child: Text(
+                        'Basith',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: constraint.maxHeight * 0.1,
+                  ),
+                  Container(
+                    height: constraint.maxHeight * 0.1,
+                    child: FittedBox(
+                      child: Text(
+                        'Saldo:',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: constraint.maxHeight * 0.1,
+                  ),
+                  Container(
+                    height: constraint.maxHeight * 0.3,
+                    child: FittedBox(
+                      child: Text(
+                        'Rp. 5.000.000',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
           SizedBox(
-            height: 20,
+            height: mediaQueryHight * 0.015,
           ),
           Container(
-            padding: EdgeInsets.only(left: 20),
-            child: Text(
-              'Riwayat terakhir :',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
+            margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
+            child: const FittedBox(
+              child: Text(
+                'Riwayat terakhir :',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: 4,
               itemBuilder: (context, index) {
                 return Card(
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  elevation: 6,
+                  margin: EdgeInsets.only(
+                      left: mediaQueryWidth * 0.05,
+                      right: mediaQueryWidth * 0.05,
+                      bottom: mediaQueryHight * 0.01),
                   child: ListTile(
                     title: Text('Nama'),
                     subtitle: Text('tanggal'),
                     trailing: Text(
                       '- Rp. 10.000',
-                      style: TextStyle(color: Colors.red),
+                      style: const TextStyle(color: Colors.red),
                     ),
                   ),
                 );
@@ -131,7 +167,7 @@ class _HomePageState extends State<_HomePage> {
         ],
       ),
       bottomNavigationBar: ConvexAppBar(
-        items: [
+        items: const [
           TabItem(icon: Icons.home, title: 'Home'),
           TabItem(icon: Icons.payment, title: 'TopUp'),
           TabItem(icon: Icons.history, title: 'History')
