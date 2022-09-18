@@ -1,11 +1,16 @@
 import 'dart:convert';
 
+import 'package:cashier_tekaja/current_formatter.dart';
 import 'package:cashier_tekaja/widgets/history_list.dart';
 import 'package:cashier_tekaja/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/services.dart';
+import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/platform_tags.dart';
+import 'dart:convert';
+import 'package:convert/convert.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +40,10 @@ class _HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<_HomePage> {
+  NfcTag? tag;
+  String identifier = "";
+  var data;
+
   void _sendData(String nipd, num amount) async {
     final response = await http.post(
         Uri.parse('https://dompetsantri.herokuapp.com/api/transaction'),
@@ -56,6 +65,16 @@ class _HomePageState extends State<_HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      NfcManager.instance.stopSession();
+      setState(() async {
+        this.tag = tag;
+        identifier = hex.encode(NfcA.from(tag)?.identifier as List<int>);
+        var response = await http.get(Uri.parse(
+            'https://dompetsantri.herokuapp.com/api/user/${identifier}'));
+        data = json.decode(response.body) as Map<String, dynamic>;
+      });
+    });
     final mediaQueryHight = MediaQuery.of(context).size.height;
     final mediaQueryWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -65,7 +84,10 @@ class _HomePageState extends State<_HomePage> {
           Container(
             height: mediaQueryHight * 0.13,
             width: mediaQueryWidth * 0.6,
-            margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
+            margin: EdgeInsets.only(
+              left: mediaQueryWidth * 0.05,
+              top: mediaQueryHight * 0.015,
+            ),
             child: LayoutBuilder(builder: (context, constraint) {
               return const FittedBox(
                 child: Text(
@@ -117,7 +139,7 @@ class _HomePageState extends State<_HomePage> {
                     height: constraint.maxHeight * 0.3,
                     child: FittedBox(
                       child: Text(
-                        'Rp. 5.000.000',
+                        CurrencyFormat.convertToIdr(500000, 2),
                         style: TextStyle(
                           color: Colors.white,
                         ),
