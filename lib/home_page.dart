@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cashier_tekaja/cash_out.dart';
 import 'package:cashier_tekaja/current_formatter.dart';
 import 'package:cashier_tekaja/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
 import 'package:convert/convert.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -38,6 +41,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    print('terdispose');
+    NfcManager.instance.stopSession().catchError((_) {/* no op */});
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       NfcManager.instance.stopSession();
@@ -49,6 +60,11 @@ class _HomePageState extends State<HomePage> {
         data = json.decode(response.body) as Map<String, dynamic>;
       });
     });
+    var submitTextStyle = GoogleFonts.nunito(
+        fontSize: 12,
+        letterSpacing: 5,
+        color: Colors.white,
+        fontWeight: FontWeight.w300);
     final mediaQueryHight = MediaQuery.of(context).size.height;
     final mediaQueryWidth = MediaQuery.of(context).size.width;
     return Column(
@@ -88,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                     child: FittedBox(
                       child: Text(
                         data['nama'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -97,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                 if (data == null)
                   Container(
                     height: constraint.maxHeight * 0.15,
-                    child: FittedBox(
+                    child: const FittedBox(
                       child: Text(
                         "Nama",
                         style: TextStyle(
@@ -129,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                     child: FittedBox(
                       child: Text(
                         CurrencyFormat.convertToIdr(data['saldo'], 2),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -141,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                     child: FittedBox(
                       child: Text(
                         CurrencyFormat.convertToIdr(0, 2),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -153,6 +169,33 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(
           height: mediaQueryHight * 0.015,
+        ),
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
+          // child: AnimatedButton(
+          //   onPress: () {},
+          //   width: double.infinity,
+          //   text: 'SUBMIT',
+          //   gradient: LinearGradient(colors: [Colors.red, Colors.orange]),
+          //   selectedGradientColor: LinearGradient(
+          //       colors: [Colors.pinkAccent, Colors.purpleAccent]),
+          //   isReverse: true,
+          //   selectedTextColor: Colors.black,
+          //   transitionType: TransitionType.LEFT_CENTER_ROUNDER,
+          //   textStyle: submitTextStyle,
+          //   borderColor: Colors.white,
+          //   borderWidth: 1,
+          // ),
+          child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return CashOutPage();
+                }));
+              },
+              icon: Icon(Icons.payment),
+              label: Text('Withdraw')),
         ),
         Container(
           margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),

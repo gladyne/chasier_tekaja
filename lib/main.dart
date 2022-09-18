@@ -50,18 +50,16 @@ class _MainAppState extends State<MainApp> {
             icon: Icons.add_card,
             title: 'TopUp',
           ),
-          TabItem(icon: Icons.payment, title: 'Withdraw'),
-          TabItem(icon: Icons.history, title: 'History')
+          TabItem(
+            icon: Icons.history,
+            title: 'History',
+          )
         ],
         style: TabStyle.react,
         initialActiveIndex: 0,
         onTap: (int i) {
           setState(() {
-            if (i >= listOfPages.length) {
-              index = i - 1;
-            } else {
-              index = i;
-            }
+            index = i;
           });
         },
       ),
