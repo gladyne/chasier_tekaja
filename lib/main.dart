@@ -109,21 +109,36 @@ class _HomePageState extends State<_HomePage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: constraint.maxHeight * 0.15,
-                    child: FittedBox(
-                      child: Text(
-                        'Basith',
-                        style: TextStyle(color: Colors.white),
+                  if (data != null)
+                    Container(
+                      height: constraint.maxHeight * 0.15,
+                      child: FittedBox(
+                        child: Text(
+                          data['nama'],
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  if (data == null)
+                    Container(
+                      height: constraint.maxHeight * 0.15,
+                      child: FittedBox(
+                        child: Text(
+                          "Nama",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                   SizedBox(
                     height: constraint.maxHeight * 0.1,
                   ),
                   Container(
                     height: constraint.maxHeight * 0.1,
-                    child: FittedBox(
+                    child: const FittedBox(
                       child: Text(
                         'Saldo:',
                         style: TextStyle(
@@ -135,17 +150,30 @@ class _HomePageState extends State<_HomePage> {
                   SizedBox(
                     height: constraint.maxHeight * 0.1,
                   ),
-                  Container(
-                    height: constraint.maxHeight * 0.3,
-                    child: FittedBox(
-                      child: Text(
-                        CurrencyFormat.convertToIdr(500000, 2),
-                        style: TextStyle(
-                          color: Colors.white,
+                  if (data != null)
+                    Container(
+                      height: constraint.maxHeight * 0.3,
+                      child: FittedBox(
+                        child: Text(
+                          CurrencyFormat.convertToIdr(data['saldo'], 2),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  if (data == null)
+                    Container(
+                      height: constraint.maxHeight * 0.3,
+                      child: FittedBox(
+                        child: Text(
+                          CurrencyFormat.convertToIdr(0, 2),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               );
             }),
