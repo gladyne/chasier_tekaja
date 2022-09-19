@@ -39,6 +39,7 @@ dependencies:
   convert: ^3.0.2
   flutter_animated_button: ^2.0.1
   google_fonts: ^3.0.1
+  group_button: ^5.2.2
 
 dev_dependencies:
   flutter_test:
