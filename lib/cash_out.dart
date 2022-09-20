@@ -127,12 +127,40 @@ class _CashOutPageState extends State<CashOutPage> {
             margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
             child: ElevatedButton(
               onPressed: () {
+                int count = 0;
                 if (textFieldData.text.isEmpty &&
                     groupBtnData.selectedIndex == null) {
                   return;
                 } else {
-                  _sendData(
-                      widget.nipd, listOfCO[groupBtnData.selectedIndex as int]);
+                  if (!textFieldData.text.isEmpty) {
+                    count++;
+                  }
+                  if (!(groupBtnData.selectedIndex == null)) {
+                    count++;
+                  }
+                  if (count < 2) {
+                    if (!textFieldData.text.isEmpty) {
+                      num topUpValue = num.parse(textFieldData.text);
+                      if (topUpValue <= 0) {
+                        CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.error,
+                            title: "Failed",
+                            text: "Can't Assing zero to lower");
+                      } else {
+                        _sendData(widget.nipd, num.parse(textFieldData.text));
+                      }
+                    } else {
+                      _sendData(widget.nipd,
+                          listOfCO[groupBtnData.selectedIndex as int]);
+                    }
+                  } else {
+                    CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        title: "Failed",
+                        text: "Please chose one Another amount or pick");
+                  }
                 }
               },
               child: Text('CashOut'),

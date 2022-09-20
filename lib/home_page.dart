@@ -105,7 +105,10 @@ class _HomePageState extends State<HomePage> {
           margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
           width: double.infinity,
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(color: Colors.blue),
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: LayoutBuilder(builder: (context, constraint) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,18 +210,18 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        FutureBuilder(
-          future: _getRecentHistory(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              if (snapshot.hasData) {
-                List<dynamic> data = snapshot.data as List<dynamic>;
-                return Expanded(
-                  child: ListView.builder(
+        Expanded(
+          child: FutureBuilder(
+            future: _getRecentHistory(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                if (snapshot.hasData) {
+                  List<dynamic> data = snapshot.data as List<dynamic>;
+                  return ListView.builder(
                     itemCount: 4,
                     itemBuilder: (context, index) {
                       if (data[index]['isCO']) {
@@ -261,13 +264,13 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
                     },
-                  ),
-                );
-              } else {
-                return Text("${snapshot.error}");
+                  );
+                } else {
+                  return Text("${snapshot.error}");
+                }
               }
-            }
-          },
+            },
+          ),
         ),
       ],
     );

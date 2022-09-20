@@ -114,6 +114,7 @@ class _TopUpPageState extends State<TopUpPage> {
           margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
           child: TextField(
             controller: textFieldData,
+            keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: "Another Amount",
               border: OutlineInputBorder(
@@ -144,15 +145,44 @@ class _TopUpPageState extends State<TopUpPage> {
           margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
           child: ElevatedButton(
             onPressed: () {
+              int count = 0;
               if (dataInput.text.isEmpty) {
                 return;
               } else {
                 if (textFieldData.text.isEmpty &&
                     groupBtnData.selectedIndex == null) {
                   return;
+                } else {
+                  if (!textFieldData.text.isEmpty) {
+                    count++;
+                  }
+                  if (!(groupBtnData.selectedIndex == null)) {
+                    count++;
+                  }
+                  if (count < 2) {
+                    if (!textFieldData.text.isEmpty) {
+                      num topUpValue = num.parse(textFieldData.text);
+                      if (topUpValue <= 0) {
+                        CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.error,
+                            title: "Failed",
+                            text: "Can't Assing zero to lower");
+                      } else {
+                        _topUp(dataInput.text, num.parse(textFieldData.text));
+                      }
+                    } else {
+                      _topUp(dataInput.text,
+                          listOfCO[groupBtnData.selectedIndex as int]);
+                    }
+                  } else {
+                    CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        title: "Failed",
+                        text: "Please chose one Another amount or pick");
+                  }
                 }
-                _topUp(dataInput.text,
-                    listOfCO[groupBtnData.selectedIndex as int]);
               }
             },
             child: Text('TopUp'),
