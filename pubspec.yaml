@@ -40,6 +40,7 @@ dependencies:
   flutter_animated_button: ^2.0.1
   google_fonts: ^3.0.1
   group_button: ^5.2.2
+  cool_alert: ^1.1.0
 
 dev_dependencies:
   flutter_test:

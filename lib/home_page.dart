@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
 import 'package:convert/convert.dart';
-import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,6 +31,18 @@ class _HomePageState extends State<HomePage> {
     final result = json.decode(response.body);
     print(result);
     setState(() {});
+  }
+
+  Future<List<dynamic>> _getRecentHistory() async {
+    final url =
+        Uri.parse("https://dompetsantri.herokuapp.com/api/transaction?limit=4");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final transactionData = json.decode(response.body);
+      return transactionData;
+    } else {
+      throw Exception();
+    }
   }
 
   void _startNewTransaction() {
@@ -170,33 +182,20 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: mediaQueryHight * 0.015,
         ),
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
-          // child: AnimatedButton(
-          //   onPress: () {},
-          //   width: double.infinity,
-          //   text: 'SUBMIT',
-          //   gradient: LinearGradient(colors: [Colors.red, Colors.orange]),
-          //   selectedGradientColor: LinearGradient(
-          //       colors: [Colors.pinkAccent, Colors.purpleAccent]),
-          //   isReverse: true,
-          //   selectedTextColor: Colors.black,
-          //   transitionType: TransitionType.LEFT_CENTER_ROUNDER,
-          //   textStyle: submitTextStyle,
-          //   borderColor: Colors.white,
-          //   borderWidth: 1,
-          // ),
-          child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return CashOutPage();
-                }));
-              },
-              icon: Icon(Icons.payment),
-              label: Text('Withdraw')),
-        ),
+        if (data != null)
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return CashOutPage(data['nama'], data['nipd']);
+                  }));
+                },
+                icon: Icon(Icons.payment),
+                label: Text('Withdraw')),
+          ),
         Container(
           margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
           child: const FittedBox(
@@ -208,27 +207,67 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return Card(
-                elevation: 6,
-                margin: EdgeInsets.only(
-                    left: mediaQueryWidth * 0.05,
-                    right: mediaQueryWidth * 0.05,
-                    bottom: mediaQueryHight * 0.01),
-                child: ListTile(
-                  title: Text('Nama'),
-                  subtitle: Text('tanggal'),
-                  trailing: Text(
-                    '- Rp. 10.000',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+        FutureBuilder(
+          future: _getRecentHistory(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            },
-          ),
+            } else {
+              if (snapshot.hasData) {
+                List<dynamic> data = snapshot.data as List<dynamic>;
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      if (data[index]['isCO']) {
+                        return Card(
+                          elevation: 6,
+                          margin: EdgeInsets.only(
+                              left: mediaQueryWidth * 0.05,
+                              right: mediaQueryWidth * 0.05,
+                              bottom: mediaQueryHight * 0.01),
+                          child: ListTile(
+                            title: Text("${data[index]['custName']}"),
+                            subtitle: Text(
+                              DateFormat().format(
+                                  DateTime.parse(data[index]['createdAt'])),
+                            ),
+                            trailing: Text(
+                              "- ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Card(
+                          elevation: 6,
+                          margin: EdgeInsets.only(
+                              left: mediaQueryWidth * 0.05,
+                              right: mediaQueryWidth * 0.05,
+                              bottom: mediaQueryHight * 0.01),
+                          child: ListTile(
+                            title: Text("${data[index]['custName']}"),
+                            subtitle: Text(
+                              DateFormat().format(
+                                  DateTime.parse(data[index]['createdAt'])),
+                            ),
+                            trailing: Text(
+                              "+ ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                );
+              } else {
+                return Text("${snapshot.error}");
+              }
+            }
+          },
         ),
       ],
     );

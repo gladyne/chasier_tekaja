@@ -1,7 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
+import 'package:http/http.dart' as http;
+import 'package:cool_alert/cool_alert.dart';
 
 class CashOutPage extends StatefulWidget {
+  final String namaUser;
+  final String nipd;
+
+  CashOutPage(this.namaUser, this.nipd);
+
   @override
   State<CashOutPage> createState() => _CashOutPageState();
 }
@@ -17,6 +26,33 @@ class _CashOutPageState extends State<CashOutPage> {
   ];
   final textFieldData = TextEditingController();
   final groupBtnData = GroupButtonController();
+
+  void _sendData(String nipd, num amount) async {
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.loading,
+      autoCloseDuration: Duration(seconds: 1),
+    );
+    final response = await http.post(
+        Uri.parse('https://dompetsantri.herokuapp.com/api/cashout'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: jsonEncode(<String, dynamic>{"nipd": nipd, "amount": amount}));
+
+    if (response.statusCode == 201) {
+      final result = json.decode(response.body);
+      Future.delayed(Duration(seconds: 1));
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Your transaction is successful",
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +72,7 @@ class _CashOutPageState extends State<CashOutPage> {
               left: mediaQueryWidth * 0.05,
               top: mediaQueryHeight * 0.02,
             ),
-            child: FittedBox(
+            child: const FittedBox(
               child: Text(
                 'Cash Out Santri',
               ),
@@ -50,7 +86,7 @@ class _CashOutPageState extends State<CashOutPage> {
             margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
             child: FittedBox(
               child: Text(
-                'Nama',
+                widget.namaUser,
               ),
             ),
           ),
@@ -58,18 +94,19 @@ class _CashOutPageState extends State<CashOutPage> {
             height: mediaQueryHeight * 0.05,
           ),
           Container(
-              height: mediaQueryHeight * 0.1,
-              margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
-              child: TextField(
-                controller: textFieldData,
-                decoration: InputDecoration(
-                  labelText: "Another Amount",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(),
-                  ),
+            height: mediaQueryHeight * 0.1,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
+            child: TextField(
+              controller: textFieldData,
+              decoration: InputDecoration(
+                labelText: "Another Amount",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide(),
                 ),
-              )),
+              ),
+            ),
+          ),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
@@ -90,9 +127,13 @@ class _CashOutPageState extends State<CashOutPage> {
             margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
             child: ElevatedButton(
               onPressed: () {
-                print("textfield : ${textFieldData.text}");
-                print(
-                    "groupbtn : ${listOfCO[groupBtnData.selectedIndex as int]}");
+                if (textFieldData.text.isEmpty &&
+                    groupBtnData.selectedIndex == null) {
+                  return;
+                } else {
+                  _sendData(
+                      widget.nipd, listOfCO[groupBtnData.selectedIndex as int]);
+                }
               },
               child: Text('CashOut'),
             ),
