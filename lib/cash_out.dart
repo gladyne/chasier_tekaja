@@ -163,7 +163,10 @@ class _CashOutPageState extends State<CashOutPage> {
                   }
                 }
               },
-              child: Text('CashOut'),
+              child: Text(
+                'CashOut',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           )
         ],

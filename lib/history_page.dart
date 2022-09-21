@@ -1,21 +1,54 @@
 import 'dart:convert';
 
+import 'package:cashier_tekaja/filter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 import 'current_formatter.dart';
 
-class HistoryPage extends StatelessWidget {
-  Future<List<dynamic>> _getRecentHistory() async {
+class HistoryPage extends StatefulWidget {
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
+  late Future<List<dynamic>> getDataHistory;
+
+  late List<dynamic> data;
+  late List<dynamic> dataToUser;
+
+  Future<List<dynamic>> getRecentHistoryFromApi() async {
     final url = Uri.parse("https://dompetsantri.herokuapp.com/api/transaction");
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      final transactionData = json.decode(response.body);
-      return transactionData;
+      data = json.decode(response.body);
+      dataToUser = data;
+      return data;
     } else {
       throw Exception();
     }
+  }
+
+  void _searchHistory(String query) {
+    print('lagi search');
+    final sugestion = data.where((history) {
+      final name = history['custName'].toLowerCase();
+      final input = query.toLowerCase();
+
+      return name.contains(input);
+    }).toList();
+
+    setState(() {
+      dataToUser = sugestion;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDataHistory = getRecentHistoryFromApi();
   }
 
   @override
@@ -40,24 +73,30 @@ class HistoryPage extends StatelessWidget {
           ),
           child: Row(
             children: [
+              Text(
+                'History',
+                style: TextStyle(fontSize: 20),
+              ),
               Expanded(
-                child: Text(
-                  'History',
-                  style: TextStyle(fontSize: 20),
+                child: TextField(
+                  onChanged: _searchHistory,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                  ),
                 ),
               ),
               IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.search,
-                ),
+                onPressed: () {
+                  print(data);
+                },
+                icon: Icon(Icons.filter),
               )
             ],
           ),
         ),
         Expanded(
           child: FutureBuilder(
-            future: _getRecentHistory(),
+            future: getDataHistory,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -65,12 +104,11 @@ class HistoryPage extends StatelessWidget {
                 );
               } else {
                 if (snapshot.hasData) {
-                  List<dynamic> data = snapshot.data as List<dynamic>;
                   return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: data.length,
+                    itemCount: dataToUser.length,
                     itemBuilder: (context, index) {
-                      if (data[index]['isCO']) {
+                      if (dataToUser[index]['isCO']) {
                         return Card(
                           elevation: 6,
                           margin: EdgeInsets.only(
@@ -78,13 +116,13 @@ class HistoryPage extends StatelessWidget {
                               right: mediaQueryWidth * 0.05,
                               bottom: mediaQueryHeight * 0.01),
                           child: ListTile(
-                            title: Text("${data[index]['custName']}"),
+                            title: Text("${dataToUser[index]['custName']}"),
                             subtitle: Text(
-                              DateFormat().format(
-                                  DateTime.parse(data[index]['createdAt'])),
+                              DateFormat().format(DateTime.parse(
+                                  dataToUser[index]['createdAt'])),
                             ),
                             trailing: Text(
-                              "- ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              "- ${CurrencyFormat.convertToIdr(dataToUser[index]['total'], 0)}",
                               style: const TextStyle(color: Colors.red),
                             ),
                           ),
@@ -99,11 +137,11 @@ class HistoryPage extends StatelessWidget {
                           child: ListTile(
                             title: Text("${data[index]['custName']}"),
                             subtitle: Text(
-                              DateFormat().format(
-                                  DateTime.parse(data[index]['createdAt'])),
+                              DateFormat().format(DateTime.parse(
+                                  dataToUser[index]['createdAt'])),
                             ),
                             trailing: Text(
-                              "+ ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              "+ ${CurrencyFormat.convertToIdr(dataToUser[index]['total'], 0)}",
                               style: const TextStyle(color: Colors.green),
                             ),
                           ),

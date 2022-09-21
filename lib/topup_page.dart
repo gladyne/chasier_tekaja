@@ -177,18 +177,21 @@ class _TopUpPageState extends State<TopUpPage> {
                     }
                   } else {
                     CoolAlert.show(
-                        context: context,
-                        type: CoolAlertType.error,
-                        title: "Failed",
-                        text: "Please chose one Another amount or pick");
+                      context: context,
+                      type: CoolAlertType.error,
+                      title: "Failed",
+                      text: "Please chose one Another amount or pick",
+                    );
                   }
                 }
               }
             },
-            child: Text('TopUp'),
+            child: Text('TopUp', style: TextStyle(color: Colors.white)),
             style: ButtonStyle(
               shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
             ),
           ),

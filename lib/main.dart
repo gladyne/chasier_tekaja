@@ -19,6 +19,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Chashier Tekaja",
+      theme: ThemeData(primarySwatch: Colors.amber),
       home: MainApp(),
     );
   }
@@ -38,30 +39,35 @@ class _MainAppState extends State<MainApp> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: listOfPages[index],
-      bottomNavigationBar: ConvexAppBar(
-        items: const [
-          TabItem(
-            icon: Icons.account_balance,
-            title: 'Home',
-          ),
-          TabItem(
-            icon: Icons.add_card,
-            title: 'TopUp',
-          ),
-          TabItem(
-            icon: Icons.history,
-            title: 'History',
-          )
-        ],
-        style: TabStyle.react,
-        initialActiveIndex: 0,
-        onTap: (int i) {
-          setState(() {
-            index = i;
-          });
-        },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.yellow[50],
+        body: listOfPages[index],
+        bottomNavigationBar: ConvexAppBar(
+          items: const [
+            TabItem(
+              icon: Icons.account_balance,
+              title: 'Beranda',
+            ),
+            TabItem(
+              icon: Icons.add_card,
+              title: 'TopUp',
+            ),
+            TabItem(
+              icon: Icons.history,
+              title: 'Riwayat',
+            )
+          ],
+          style: TabStyle.fixedCircle,
+          initialActiveIndex: 0,
+          onTap: (int i) {
+            setState(() {
+              index = i;
+            });
+          },
+          backgroundColor: Colors.amber,
+        ),
       ),
     );
   }

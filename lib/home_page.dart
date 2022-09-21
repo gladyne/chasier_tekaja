@@ -106,7 +106,14 @@ class _HomePageState extends State<HomePage> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.blue,
+            gradient: LinearGradient(
+              colors: [
+                Colors.amber.withOpacity(0.7),
+                Colors.amber,
+              ],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft,
+            ),
             borderRadius: BorderRadius.circular(15),
           ),
           child: LayoutBuilder(builder: (context, constraint) {
@@ -228,18 +235,24 @@ class _HomePageState extends State<HomePage> {
                         return Card(
                           elevation: 6,
                           margin: EdgeInsets.only(
-                              left: mediaQueryWidth * 0.05,
-                              right: mediaQueryWidth * 0.05,
-                              bottom: mediaQueryHight * 0.01),
+                            left: mediaQueryWidth * 0.05,
+                            right: mediaQueryWidth * 0.05,
+                            bottom: mediaQueryHight * 0.01,
+                          ),
                           child: ListTile(
-                            title: Text("${data[index]['custName']}"),
+                            title: Text(
+                              "${data[index]['custName']}",
+                            ),
                             subtitle: Text(
                               DateFormat().format(
-                                  DateTime.parse(data[index]['createdAt'])),
+                                DateTime.parse(data[index]['createdAt']),
+                              ),
                             ),
                             trailing: Text(
                               "- ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
-                              style: const TextStyle(color: Colors.red),
+                              style: const TextStyle(
+                                color: Colors.red,
+                              ),
                             ),
                           ),
                         );
@@ -247,18 +260,24 @@ class _HomePageState extends State<HomePage> {
                         return Card(
                           elevation: 6,
                           margin: EdgeInsets.only(
-                              left: mediaQueryWidth * 0.05,
-                              right: mediaQueryWidth * 0.05,
-                              bottom: mediaQueryHight * 0.01),
+                            left: mediaQueryWidth * 0.05,
+                            right: mediaQueryWidth * 0.05,
+                            bottom: mediaQueryHight * 0.01,
+                          ),
                           child: ListTile(
-                            title: Text("${data[index]['custName']}"),
+                            title: Text(
+                              "${data[index]['custName']}",
+                            ),
                             subtitle: Text(
                               DateFormat().format(
-                                  DateTime.parse(data[index]['createdAt'])),
+                                DateTime.parse(data[index]['createdAt']),
+                              ),
                             ),
                             trailing: Text(
                               "+ ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
-                              style: const TextStyle(color: Colors.green),
+                              style: const TextStyle(
+                                color: Colors.green,
+                              ),
                             ),
                           ),
                         );
@@ -266,7 +285,9 @@ class _HomePageState extends State<HomePage> {
                     },
                   );
                 } else {
-                  return Text("${snapshot.error}");
+                  return Text(
+                    "${snapshot.error}",
+                  );
                 }
               }
             },
