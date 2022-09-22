@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cashier_tekaja/api/user_api.dart';
 import 'package:cashier_tekaja/cash_out.dart';
 import 'package:cashier_tekaja/models/user.dart';
+import 'package:cashier_tekaja/success_payment.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:group_button/group_button.dart';
@@ -47,14 +48,21 @@ class _TopUpPageState extends State<TopUpPage> {
     if (response.statusCode == 201) {
       final result = json.decode(response.body);
       Future.delayed(Duration(seconds: 1));
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        text: "Your transaction is successful",
-        onConfirmBtnTap: () {
-          Navigator.of(context).pop();
-        },
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (builder) {
+            return SuccessPayment();
+          },
+        ),
       );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.success,
+      //   text: "Your transaction is successful",
+      //   onConfirmBtnTap: () {
+      //     Navigator.of(context).pop();
+      //   },
+      // );
     }
   }
 
@@ -62,141 +70,143 @@ class _TopUpPageState extends State<TopUpPage> {
   Widget build(BuildContext context) {
     final mediaQueryWidth = MediaQuery.of(context).size.width;
     final mediaQueryHeight = MediaQuery.of(context).size.height;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: mediaQueryWidth / 3,
-          child: const FittedBox(
-            child: Text(
-              'TopUp',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: mediaQueryHeight * 0.02,
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-          child: Autocomplete<User>(
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text == '') {
-                return const Iterable<User>.empty();
-              }
-              return UserApi.getUsersNIPDSuggestion(textEditingValue);
-            },
-            displayStringForOption: _displayUseName,
-            fieldViewBuilder: (BuildContext context,
-                TextEditingController textDecoration,
-                FocusNode fieldFocus,
-                VoidCallback onFieldSubmmited) {
-              dataInput = textDecoration;
-              return TextField(
-                controller: textDecoration,
-                focusNode: fieldFocus,
-                decoration: InputDecoration(
-                  labelText: "Please fill NIPD",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        SizedBox(
-          height: mediaQueryHeight * 0.02,
-        ),
-        Container(
-          height: mediaQueryHeight * 0.1,
-          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-          child: TextField(
-            controller: textFieldData,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: "Another Amount",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25),
-                borderSide: BorderSide(),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: mediaQueryWidth / 3,
+            child: const FittedBox(
+              child: Text(
+                'TopUp',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
-          child: GroupButton(
-            controller: groupBtnData,
-            buttons: listOfCO,
-            options: GroupButtonOptions(
-              borderRadius: BorderRadius.circular(25),
-              mainGroupAlignment: MainGroupAlignment.center,
-              crossGroupAlignment: CrossGroupAlignment.center,
-              groupRunAlignment: GroupRunAlignment.start,
+          SizedBox(
+            height: mediaQueryHeight * 0.02,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+            child: Autocomplete<User>(
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text == '') {
+                  return const Iterable<User>.empty();
+                }
+                return UserApi.getUsersNIPDSuggestion(textEditingValue);
+              },
+              displayStringForOption: _displayUseName,
+              fieldViewBuilder: (BuildContext context,
+                  TextEditingController textDecoration,
+                  FocusNode fieldFocus,
+                  VoidCallback onFieldSubmmited) {
+                dataInput = textDecoration;
+                return TextField(
+                  controller: textDecoration,
+                  focusNode: fieldFocus,
+                  decoration: InputDecoration(
+                    labelText: "Please fill NIPD",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ),
-        SizedBox(
-          height: mediaQueryHeight * 0.03,
-        ),
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-          child: ElevatedButton(
-            onPressed: () {
-              int count = 0;
-              if (dataInput.text.isEmpty) {
-                return;
-              } else {
-                if (textFieldData.text.isEmpty &&
-                    groupBtnData.selectedIndex == null) {
+          SizedBox(
+            height: mediaQueryHeight * 0.02,
+          ),
+          Container(
+            height: mediaQueryHeight * 0.1,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+            child: TextField(
+              controller: textFieldData,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "Another Amount",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide(),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
+            child: GroupButton(
+              controller: groupBtnData,
+              buttons: listOfCO,
+              options: GroupButtonOptions(
+                borderRadius: BorderRadius.circular(25),
+                mainGroupAlignment: MainGroupAlignment.center,
+                crossGroupAlignment: CrossGroupAlignment.center,
+                groupRunAlignment: GroupRunAlignment.start,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: mediaQueryHeight * 0.03,
+          ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+            child: ElevatedButton(
+              onPressed: () {
+                int count = 0;
+                if (dataInput.text.isEmpty) {
                   return;
                 } else {
-                  if (!textFieldData.text.isEmpty) {
-                    count++;
-                  }
-                  if (!(groupBtnData.selectedIndex == null)) {
-                    count++;
-                  }
-                  if (count < 2) {
+                  if (textFieldData.text.isEmpty &&
+                      groupBtnData.selectedIndex == null) {
+                    return;
+                  } else {
                     if (!textFieldData.text.isEmpty) {
-                      num topUpValue = num.parse(textFieldData.text);
-                      if (topUpValue <= 0) {
-                        CoolAlert.show(
-                            context: context,
-                            type: CoolAlertType.error,
-                            title: "Failed",
-                            text: "Can't Assing zero to lower");
+                      count++;
+                    }
+                    if (!(groupBtnData.selectedIndex == null)) {
+                      count++;
+                    }
+                    if (count < 2) {
+                      if (!textFieldData.text.isEmpty) {
+                        num topUpValue = num.parse(textFieldData.text);
+                        if (topUpValue <= 0) {
+                          CoolAlert.show(
+                              context: context,
+                              type: CoolAlertType.error,
+                              title: "Failed",
+                              text: "Can't Assing zero to lower");
+                        } else {
+                          _topUp(dataInput.text, num.parse(textFieldData.text));
+                        }
                       } else {
-                        _topUp(dataInput.text, num.parse(textFieldData.text));
+                        _topUp(dataInput.text,
+                            listOfCO[groupBtnData.selectedIndex as int]);
                       }
                     } else {
-                      _topUp(dataInput.text,
-                          listOfCO[groupBtnData.selectedIndex as int]);
+                      CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        title: "Failed",
+                        text: "Please chose one Another amount or pick",
+                      );
                     }
-                  } else {
-                    CoolAlert.show(
-                      context: context,
-                      type: CoolAlertType.error,
-                      title: "Failed",
-                      text: "Please chose one Another amount or pick",
-                    );
                   }
                 }
-              }
-            },
-            child: Text('TopUp', style: TextStyle(color: Colors.white)),
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+              },
+              child: Text('TopUp', style: TextStyle(color: Colors.white)),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
               ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

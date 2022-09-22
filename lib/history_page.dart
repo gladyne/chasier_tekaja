@@ -24,6 +24,10 @@ class _HistoryPageState extends State<HistoryPage> {
     if (response.statusCode == 200) {
       data = json.decode(response.body);
       dataToUser = data;
+      DateTime coba = DateTime.parse(data[data.length - 1]['createdAt']);
+      print(coba);
+      print(DateTime.now());
+      print(DateTime.now().compareTo(coba));
       return data;
     } else {
       throw Exception();
@@ -41,6 +45,25 @@ class _HistoryPageState extends State<HistoryPage> {
 
     setState(() {
       dataToUser = sugestion;
+      print(dataToUser);
+    });
+  }
+
+  void _filterDate(DateTime start, DateTime end) {
+    var container = [];
+    final formatter = DateFormat("yyyy-MM-dd");
+    for (var date in data) {
+      if (DateTime.parse(formatter.format(DateTime.parse(date['createdAt'])))
+                  .compareTo(start) >=
+              0 &&
+          DateTime.parse(formatter.format(DateTime.parse(date['createdAt'])))
+                  .compareTo(end) <=
+              0) {
+        container.add(date);
+      }
+    }
+    setState(() {
+      dataToUser = container;
     });
   }
 
@@ -75,7 +98,9 @@ class _HistoryPageState extends State<HistoryPage> {
             children: [
               Text(
                 'History',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
               Expanded(
                 child: TextField(
@@ -87,7 +112,11 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               IconButton(
                 onPressed: () {
-                  print(data);
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (builder) {
+                        return Filter(_filterDate);
+                      });
                 },
                 icon: Icon(Icons.filter),
               )
@@ -131,18 +160,22 @@ class _HistoryPageState extends State<HistoryPage> {
                         return Card(
                           elevation: 6,
                           margin: EdgeInsets.only(
-                              left: mediaQueryWidth * 0.05,
-                              right: mediaQueryWidth * 0.05,
-                              bottom: mediaQueryHeight * 0.01),
+                            left: mediaQueryWidth * 0.05,
+                            right: mediaQueryWidth * 0.05,
+                            bottom: mediaQueryHeight * 0.01,
+                          ),
                           child: ListTile(
-                            title: Text("${data[index]['custName']}"),
+                            title: Text("${dataToUser[index]['custName']}"),
                             subtitle: Text(
-                              DateFormat().format(DateTime.parse(
-                                  dataToUser[index]['createdAt'])),
+                              DateFormat().format(
+                                DateTime.parse(dataToUser[index]['createdAt']),
+                              ),
                             ),
                             trailing: Text(
                               "+ ${CurrencyFormat.convertToIdr(dataToUser[index]['total'], 0)}",
-                              style: const TextStyle(color: Colors.green),
+                              style: const TextStyle(
+                                color: Colors.green,
+                              ),
                             ),
                           ),
                         );

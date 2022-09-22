@@ -231,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                   return ListView.builder(
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      if (data[index]['isCO']) {
+                      if (data[data.length - index - 1]['isCO']) {
                         return Card(
                           elevation: 6,
                           margin: EdgeInsets.only(
@@ -245,11 +245,12 @@ class _HomePageState extends State<HomePage> {
                             ),
                             subtitle: Text(
                               DateFormat().format(
-                                DateTime.parse(data[index]['createdAt']),
+                                DateTime.parse(
+                                    data[data.length - index - 1]['createdAt']),
                               ),
                             ),
                             trailing: Text(
-                              "- ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              "- ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
                               style: const TextStyle(
                                 color: Colors.red,
                               ),
@@ -266,15 +267,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: ListTile(
                             title: Text(
-                              "${data[index]['custName']}",
+                              "${data[data.length - index - 1]['custName']}",
                             ),
                             subtitle: Text(
                               DateFormat().format(
-                                DateTime.parse(data[index]['createdAt']),
+                                DateTime.parse(
+                                    data[data.length - index - 1]['createdAt']),
                               ),
                             ),
                             trailing: Text(
-                              "+ ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
+                              "+ ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
                               style: const TextStyle(
                                 color: Colors.green,
                               ),
