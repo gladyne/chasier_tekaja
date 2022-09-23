@@ -22,100 +22,102 @@ class _FilterState extends State<Filter> {
     final mediaQueryHeight = MediaQuery.of(context).size.height;
     final mediaQueryWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.white,
-      ),
-      height: mediaQueryHeight * 0.6,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Filter"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              OutlinedButton(
-                onPressed: () async {
-                  await showDatePicker(
-                    context: context,
-                    initialDate: date,
-                    firstDate: DateTime(2022),
-                    lastDate: date,
-                  ).then((seletedDate) {
-                    if (seletedDate != null) {
-                      setState(
-                        () {
-                          startDate = seletedDate;
-                          startDateFormatDisplay =
-                              DateFormat('d-MMM-y').format(seletedDate);
-                        },
-                      );
-                    }
-                  });
-                },
-                child: startDateFormatDisplay.isEmpty
-                    ? Text("Tanggal Awal")
-                    : Text(startDateFormatDisplay),
-              ),
-              OutlinedButton(
-                onPressed: () async {
-                  await showDatePicker(
-                    context: context,
-                    initialDate: date,
-                    firstDate: DateTime(2022),
-                    lastDate: date,
-                  ).then((seletedDate) {
-                    if (seletedDate != null) {
-                      setState(
-                        () {
-                          endDate = seletedDate;
-                          endDateFormatDisplay =
-                              DateFormat('d-MMM-y').format(seletedDate);
-                        },
-                      );
-                    }
-                  });
-                },
-                child: endDateFormatDisplay.isEmpty
-                    ? Text("Tanggal Akhir")
-                    : Text(endDateFormatDisplay),
-              )
-            ],
-          ),
-          Container(
-            height: mediaQueryHeight * 0.1,
-            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Cari berdasarkan nama",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+        ),
+        height: mediaQueryHeight * 0.6,
+        child: Column(
+          children: [
+            Text("Filter"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OutlinedButton(
+                  onPressed: () async {
+                    await showDatePicker(
+                      context: context,
+                      initialDate: date,
+                      firstDate: DateTime(2022),
+                      lastDate: date,
+                    ).then((seletedDate) {
+                      if (seletedDate != null) {
+                        setState(
+                          () {
+                            startDate = seletedDate;
+                            startDateFormatDisplay =
+                                DateFormat('d-MMM-y').format(seletedDate);
+                          },
+                        );
+                      }
+                    });
+                  },
+                  child: startDateFormatDisplay.isEmpty
+                      ? Text("Tanggal Awal")
+                      : Text(startDateFormatDisplay),
+                ),
+                OutlinedButton(
+                  onPressed: () async {
+                    await showDatePicker(
+                      context: context,
+                      initialDate: date,
+                      firstDate: DateTime(2022),
+                      lastDate: date,
+                    ).then((seletedDate) {
+                      if (seletedDate != null) {
+                        setState(
+                          () {
+                            endDate = seletedDate;
+                            endDateFormatDisplay =
+                                DateFormat('d-MMM-y').format(seletedDate);
+                          },
+                        );
+                      }
+                    });
+                  },
+                  child: endDateFormatDisplay.isEmpty
+                      ? Text("Tanggal Akhir")
+                      : Text(endDateFormatDisplay),
+                )
+              ],
+            ),
+            Container(
+              height: mediaQueryHeight * 0.1,
+              margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Cari berdasarkan nama",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            height: mediaQueryHeight * 0.1,
-            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Cari berdasarkan kelas",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
+            Container(
+              height: mediaQueryHeight * 0.1,
+              margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Cari berdasarkan kelas",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
               ),
             ),
-          ),
-          ElevatedButton(
-              onPressed: () {
-                widget.filterHandler(startDate, endDate);
-                Navigator.of(context).pop();
-              },
-              child: Text("Filter"))
-        ],
+            ElevatedButton(
+                onPressed: () {
+                  widget.filterHandler(startDate, endDate);
+                  Navigator.of(context).pop();
+                },
+                child: Text("Filter"))
+          ],
+        ),
       ),
     );
   }

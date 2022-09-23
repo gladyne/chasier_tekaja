@@ -5,8 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class UserApi {
-  static Future<List<User>> getUsersNIPDSuggestion(
-      TextEditingValue query) async {
+  static Future<List<User>> getUsersNIPDSuggestion() async {
     final url = Uri.parse('https://dompetsantri.herokuapp.com/api/user');
     final response = await http.get(url);
 
@@ -19,12 +18,13 @@ class UserApi {
           nipd: json['nipd'],
           pesantren: json['pesantren'],
         );
-      }).where((user) {
-        final nipdToLower = user.nipd.toLowerCase();
-        final queryToLower = query.text.toLowerCase();
-
-        return nipdToLower.contains(queryToLower);
       }).toList();
+      //  . where((user) {
+      //   final nipdToLower = user.nipd.toLowerCase();
+      //   final queryToLower = query.text.toLowerCase();
+
+      //   return nipdToLower.contains(queryToLower);
+      // }).toList();
     } else {
       throw Exception();
     }

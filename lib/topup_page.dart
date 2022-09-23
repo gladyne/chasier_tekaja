@@ -17,8 +17,35 @@ class TopUpPage extends StatefulWidget {
 class _TopUpPageState extends State<TopUpPage> {
   @override
   TextEditingController dataInput = TextEditingController();
+  late List<User> getDataNama;
+  String nipd = "";
 
-  static String _displayUseName(User option) => option.nipd;
+  static String _displayUseName(User option) => option.nama;
+
+  void _fetchData() async {
+    final url = Uri.parse('`https://dompetsantri.herokuapp.com/api/user`');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      getDataNama = data.map((json) {
+        User(
+          nama: json['nama'],
+          nipd: json['nipd'],
+          pesantren: json['pesantren'],
+        );
+      }).toList() as List<User>;
+
+      //  . where((user) {
+      //   final nipdToLower = user.nipd.toLowerCase();
+      //   final queryToLower = query.text.toLowerCase();
+
+      //   return nipdToLower.contains(queryToLower);
+      // }).toList();
+    } else {
+      throw Exception();
+    }
+  }
 
   static const List<int> listOfCO = [
     25000,
@@ -66,6 +93,20 @@ class _TopUpPageState extends State<TopUpPage> {
     }
   }
 
+  void _anotherFetch() async {
+    getDataNama = await UserApi.getUsersNIPDSuggestion();
+    print(getDataNama[0].nama);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchData();
+    _anotherFetch();
+    // print(getDataNama);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQueryWidth = MediaQuery.of(context).size.width;
@@ -93,7 +134,16 @@ class _TopUpPageState extends State<TopUpPage> {
                 if (textEditingValue.text == '') {
                   return const Iterable<User>.empty();
                 }
-                return UserApi.getUsersNIPDSuggestion(textEditingValue);
+                // return getDataNama.where((element) {
+                //   return element.nama
+                //       .toLowerCase()
+                //       .contains(textEditingValue.text.toLowerCase());
+                // });
+                return getDataNama.where((element) {
+                  return element.nama
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase());
+                });
               },
               displayStringForOption: _displayUseName,
               fieldViewBuilder: (BuildContext context,
@@ -105,13 +155,47 @@ class _TopUpPageState extends State<TopUpPage> {
                   controller: textDecoration,
                   focusNode: fieldFocus,
                   decoration: InputDecoration(
-                    labelText: "Please fill NIPD",
+                    labelText: "Isi Data Santri",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
                       borderSide: BorderSide(),
                     ),
                   ),
                 );
+              },
+              optionsViewBuilder: (BuildContext context,
+                  AutocompleteOnSelected<User> onSelected,
+                  Iterable<User> options) {
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    child: Container(
+                      width: 300,
+                      color: Colors.amber,
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(10),
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final User option = options.elementAt(index);
+
+                          return GestureDetector(
+                            onTap: () {
+                              onSelected(option);
+                            },
+                            child: ListTile(
+                              title: Text("${option.nama}"),
+                              trailing: Text("${option.nipd}"),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+              onSelected: (User selected) {
+                nipd = selected.nipd;
+                // print("${selected.nipd}");
               },
             ),
           ),
@@ -125,7 +209,8 @@ class _TopUpPageState extends State<TopUpPage> {
               controller: textFieldData,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: "Another Amount",
+                prefix: Text("Rp. "),
+                labelText: "Jumlah lain",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                   borderSide: BorderSide(),
@@ -136,6 +221,7 @@ class _TopUpPageState extends State<TopUpPage> {
           Container(
             margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
             child: GroupButton(
+              enableDeselect: true,
               controller: groupBtnData,
               buttons: listOfCO,
               options: GroupButtonOptions(
@@ -155,7 +241,7 @@ class _TopUpPageState extends State<TopUpPage> {
             child: ElevatedButton(
               onPressed: () {
                 int count = 0;
-                if (dataInput.text.isEmpty) {
+                if (nipd.isEmpty) {
                   return;
                 } else {
                   if (textFieldData.text.isEmpty &&
@@ -176,13 +262,13 @@ class _TopUpPageState extends State<TopUpPage> {
                               context: context,
                               type: CoolAlertType.error,
                               title: "Failed",
-                              text: "Can't Assing zero to lower");
+                              text: "Can't Assign zero to lower");
                         } else {
-                          _topUp(dataInput.text, num.parse(textFieldData.text));
+                          _topUp(nipd, num.parse(textFieldData.text));
                         }
                       } else {
-                        _topUp(dataInput.text,
-                            listOfCO[groupBtnData.selectedIndex as int]);
+                        _topUp(
+                            nipd, listOfCO[groupBtnData.selectedIndex as int]);
                       }
                     } else {
                       CoolAlert.show(
@@ -195,7 +281,10 @@ class _TopUpPageState extends State<TopUpPage> {
                   }
                 }
               },
-              child: Text('TopUp', style: TextStyle(color: Colors.white)),
+              child: Text('TopUp',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
