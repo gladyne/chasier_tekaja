@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
   String identifier = "";
   var data;
 
+  late Future<List<dynamic>> getDataUser;
+
   void _sendData(String nipd, num amount) async {
     final response = await http.post(
         Uri.parse('https://dompetsantri.herokuapp.com/api/transaction'),
@@ -50,6 +52,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) => NewTransaction(_sendData),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDataUser = _getRecentHistory();
   }
 
   @override
@@ -219,7 +228,7 @@ class _HomePageState extends State<HomePage> {
         ),
         Expanded(
           child: FutureBuilder(
-            future: _getRecentHistory(),
+            future: getDataUser,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

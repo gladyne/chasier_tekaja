@@ -47,13 +47,13 @@ class _TopUpPageState extends State<TopUpPage> {
     }
   }
 
-  static const List<int> listOfCO = [
-    25000,
-    50000,
-    100000,
-    150000,
-    200000,
-    250000
+  static const List<String> listOfCO = [
+    "Rp. 50.000 ",
+    "Rp. 100.000",
+    "Rp. 150.000",
+    "Rp. 200.000",
+    "Rp. 250.000",
+    "Rp. 300.000"
   ];
 
   final groupBtnData = GroupButtonController();
@@ -113,9 +113,9 @@ class _TopUpPageState extends State<TopUpPage> {
     final mediaQueryHeight = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
+            margin: EdgeInsets.only(top: mediaQueryHeight / 6),
             width: mediaQueryWidth / 3,
             child: const FittedBox(
               child: Text(
@@ -267,8 +267,11 @@ class _TopUpPageState extends State<TopUpPage> {
                           _topUp(nipd, num.parse(textFieldData.text));
                         }
                       } else {
-                        _topUp(
-                            nipd, listOfCO[groupBtnData.selectedIndex as int]);
+                        num selected = num.parse(
+                          listOfCO[groupBtnData.selectedIndex as int]
+                              .replaceAll(RegExp('[^0-9]'), ''),
+                        );
+                        _topUp(nipd, selected);
                       }
                     } else {
                       CoolAlert.show(
