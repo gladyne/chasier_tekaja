@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:cashier_tekaja/filter.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,6 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void _searchHistory(String query) {
-    print('lagi search');
     final sugestion = data.where((history) {
       final name = history['custName'].toLowerCase();
       final input = query.toLowerCase();
@@ -46,6 +46,19 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() {
       dataToUser = sugestion;
       print(dataToUser);
+    });
+  }
+
+  void _filterName(String query) {
+    final filter = data.where((history) {
+      final name = history['custName'].toLowerCase();
+      final input = query.toLowerCase();
+
+      return name.contains(input);
+    }).toList();
+
+    setState(() {
+      dataToUser = filter;
     });
   }
 
@@ -65,6 +78,57 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() {
       dataToUser = container;
     });
+  }
+
+  void _filterDateAndName(String inputName, DateTime start, DateTime end) {
+    var container = [];
+    final formatter = DateFormat("yyyy-MM-dd");
+    for (var date in data) {
+      if (DateTime.parse(formatter.format(DateTime.parse(date['createdAt'])))
+                  .compareTo(start) >=
+              0 &&
+          DateTime.parse(formatter.format(DateTime.parse(date['createdAt'])))
+                  .compareTo(end) <=
+              0) {
+        container.add(date);
+      }
+    }
+    final filter = container.where((history) {
+      final name = history['custName'].toLowerCase();
+      final input = inputName.toLowerCase();
+
+      return name.contains(input);
+    }).toList();
+
+    setState(() {
+      dataToUser = filter;
+    });
+  }
+
+  void _filterResult(String inputName, DateTime start, DateTime end) {
+    if (inputName.isEmpty) {
+      if (!(DateTime.now().hour == start.hour)) {
+        if (!(DateTime.now().day == end.day)) {
+          print('Waktu filter');
+          _filterDate(start, end);
+        }
+      }
+    } else {
+      print(inputName);
+      if (DateTime.now().hour == start.hour) {
+        if (DateTime.now().day == end.day) {
+          print('filtername');
+          _filterName(inputName);
+        }
+      } else {
+        if (!(DateTime.now().hour == start.hour)) {
+          if (!(DateTime.now().day == end.day)) {
+            print("filter date and namme");
+            _filterDateAndName(inputName, start, end);
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -115,7 +179,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   showModalBottomSheet(
                       context: context,
                       builder: (builder) {
-                        return Filter(_filterDate);
+                        return Filter(_filterResult);
                       });
                 },
                 icon: Icon(Icons.filter),

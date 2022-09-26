@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SuccessPayment extends StatelessWidget {
   @override
@@ -17,7 +18,7 @@ class SuccessPayment extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.goNamed('mainApp');
             },
             child: Text(
               "Tutup",

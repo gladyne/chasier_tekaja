@@ -2,14 +2,20 @@ import 'dart:convert';
 
 import 'package:cashier_tekaja/api/user_api.dart';
 import 'package:cashier_tekaja/cash_out.dart';
+import 'package:cashier_tekaja/main.dart';
 import 'package:cashier_tekaja/models/user.dart';
 import 'package:cashier_tekaja/success_payment.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:group_button/group_button.dart';
 import 'package:http/http.dart' as http;
 
 class TopUpPage extends StatefulWidget {
+  // final VoidCallback changePageMain;
+
+  // TopUpPage(this.changePageMain);
+
   @override
   State<TopUpPage> createState() => _TopUpPageState();
 }
@@ -75,13 +81,17 @@ class _TopUpPageState extends State<TopUpPage> {
     if (response.statusCode == 201) {
       final result = json.decode(response.body);
       Future.delayed(Duration(seconds: 1));
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (builder) {
-            return SuccessPayment();
-          },
-        ),
-      );
+
+      // context.pop();
+      // widget.changePageMain();
+      context.push('/success');
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (builder) {
+      //       return SuccessPayment();
+      //     },
+      //   ),
+      // );
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.success,
@@ -105,6 +115,13 @@ class _TopUpPageState extends State<TopUpPage> {
     _fetchData();
     _anotherFetch();
     // print(getDataNama);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print("topup terdispose");
+    super.dispose();
   }
 
   @override

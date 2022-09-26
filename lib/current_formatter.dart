@@ -7,4 +7,13 @@ class CurrencyFormat {
 
     return currencyFormatter.format(number);
   }
+
+  // static int convertToInt(String rupiahForm){
+  //   late int result;
+  //   for(var i = 0;i < rupiahForm.length;i++){
+  //     if()
+  //   }
+
+  //   return result;
+  // }
 }

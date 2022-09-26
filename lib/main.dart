@@ -1,9 +1,11 @@
+import 'package:cashier_tekaja/success_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'home_page.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:cashier_tekaja/topup_page.dart';
 import 'history_page.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,13 +16,31 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  final GoRouter _router = GoRouter(routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) {
+        return MainApp();
+      },
+      name: 'mainApp',
+    ),
+    GoRoute(
+        path: '/success',
+        builder: (context, state) {
+          return SuccessPayment();
+        },
+        name: 'successPayment')
+  ], initialLocation: '/');
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: "Chashier Tekaja",
       theme: ThemeData(primarySwatch: Colors.amber),
-      home: MainApp(),
+      routeInformationParser: _router.routeInformationParser,
+      routerDelegate: _router.routerDelegate,
+      routeInformationProvider: _router.routeInformationProvider,
     );
   }
 }
@@ -31,14 +51,23 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  int index = 0;
   final listOfPages = [
     HomePage(),
     TopUpPage(),
     HistoryPage(),
   ];
-  int index = 0;
+
+  @override
+  void didUpdateWidget(covariant MainApp oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    index = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("main ke build lagi");
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(

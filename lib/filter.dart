@@ -12,10 +12,12 @@ class Filter extends StatefulWidget {
 
 class _FilterState extends State<Filter> {
   DateTime date = DateTime.now();
-  late DateTime startDate;
-  late DateTime endDate;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
   String startDateFormatDisplay = "";
   String endDateFormatDisplay = "";
+
+  final inputName = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +31,9 @@ class _FilterState extends State<Filter> {
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,
         ),
-        height: mediaQueryHeight * 0.6,
         child: Column(
           children: [
-            Text("Filter"),
+            const Text("Filter"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -56,7 +57,7 @@ class _FilterState extends State<Filter> {
                     });
                   },
                   child: startDateFormatDisplay.isEmpty
-                      ? Text("Tanggal Awal")
+                      ? const Text("Tanggal Awal")
                       : Text(startDateFormatDisplay),
                 ),
                 OutlinedButton(
@@ -79,7 +80,7 @@ class _FilterState extends State<Filter> {
                     });
                   },
                   child: endDateFormatDisplay.isEmpty
-                      ? Text("Tanggal Akhir")
+                      ? const Text("Tanggal Akhir")
                       : Text(endDateFormatDisplay),
                 )
               ],
@@ -88,7 +89,7 @@ class _FilterState extends State<Filter> {
               height: mediaQueryHeight * 0.1,
               margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
               child: TextField(
-                keyboardType: TextInputType.number,
+                controller: inputName,
                 decoration: InputDecoration(
                   labelText: "Cari berdasarkan nama",
                   border: OutlineInputBorder(
@@ -112,10 +113,34 @@ class _FilterState extends State<Filter> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  widget.filterHandler(startDate, endDate);
+                  // if (inputName.text.isEmpty) {
+                  //   if (!(DateTime.now().hour == startDate.hour)) {
+                  //     if (!(DateTime.now().day == endDate.day)) {
+                  //       print('Waktu filter');
+                  //       widget.filterHandler(startDate, endDate);
+                  //     }
+                  //   }
+                  // } else {
+                  //   print(inputName.text);
+                  //   if (DateTime.now().hour == startDate.hour) {
+                  //     if (DateTime.now().day == endDate.day) {
+                  //       print('filtername');
+                  //       widget.filterNameHandler(inputName.text);
+                  //     }
+                  //   } else {
+                  //     print(startDate.hour);
+                  //     print(DateTime.now().hour);
+                  //     print("Not Ok");
+                  //   }
+                  // }
+
+                  widget.filterHandler(inputName.text, startDate, endDate);
+
+                  // print(endDate);
+                  // widget.filterHandler(startDate, endDate);
                   Navigator.of(context).pop();
                 },
-                child: Text("Filter"))
+                child: const Text("Filter"))
           ],
         ),
       ),
