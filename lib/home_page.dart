@@ -201,20 +201,20 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: mediaQueryHight * 0.015,
         ),
-        if (data != null)
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
-            child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return CashOutPage(data['nama'], data['nipd']);
-                  }));
-                },
-                icon: Icon(Icons.payment),
-                label: Text('Withdraw')),
-          ),
+        // if (data != null)
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
+          child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return CashOutPage("ABDILAH ALI KURNIAWAN", "0920001");
+                }));
+              },
+              icon: Icon(Icons.payment),
+              label: Text('Withdraw')),
+        ),
         Container(
           margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
           child: const FittedBox(
