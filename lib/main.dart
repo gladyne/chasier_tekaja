@@ -1,3 +1,4 @@
+import 'package:cashier_tekaja/cash_out.dart';
 import 'package:cashier_tekaja/success_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,13 +24,29 @@ class App extends StatelessWidget {
         return MainApp();
       },
       name: 'mainApp',
+      routes: [
+        GoRoute(
+          path: 'cashout/:name/:nipd',
+          builder: ((context, state) {
+            String name = state.params["name"]!;
+            String nipd = state.params["nipd"]!;
+            return CashOutPage(name, nipd);
+          }),
+          name: 'cashout',
+        ),
+        GoRoute(
+          path: 'success/:name/:method/:paid/:total',
+          builder: (context, state) {
+            String nama = state.params["name"] ?? "no name";
+            String method = state.params["method"] ?? "no method";
+            int paid = int.parse(state.params["paid"]!);
+            int total = int.parse(state.params["total"]!);
+            return SuccessPayment(nama, method, paid, total);
+          },
+          name: 'successPayment',
+        )
+      ],
     ),
-    GoRoute(
-        path: '/success',
-        builder: (context, state) {
-          return SuccessPayment();
-        },
-        name: 'successPayment')
   ], initialLocation: '/');
 
   @override

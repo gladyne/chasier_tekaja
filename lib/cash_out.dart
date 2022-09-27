@@ -43,9 +43,18 @@ class _CashOutPageState extends State<CashOutPage> {
         body: jsonEncode(<String, dynamic>{"nipd": nipd, "amount": amount}));
 
     if (response.statusCode == 201) {
-      final result = json.decode(response.body);
+      final Map<String, dynamic> result = json.decode(response.body);
+      print(result);
       Future.delayed(Duration(seconds: 1));
-      context.goNamed('successPayment');
+      context.pushNamed(
+        'successPayment',
+        params: {
+          "name": result["nama"],
+          "method": "Penarikan Dana",
+          "paid": result["paid"].toString(),
+          "total": result["saldoSekarang"].toString()
+        },
+      );
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.success,

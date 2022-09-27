@@ -79,12 +79,20 @@ class _TopUpPageState extends State<TopUpPage> {
         body: jsonEncode(<String, dynamic>{"nipd": nipd, "amount": amount}));
 
     if (response.statusCode == 201) {
-      final result = json.decode(response.body);
+      final Map<String, dynamic> result = json.decode(response.body);
       Future.delayed(Duration(seconds: 1));
-
+      context.pushNamed(
+        'successPayment',
+        params: {
+          "name": result["nama"],
+          "method": "TopUp",
+          "paid": result["topup"].toString(),
+          "total": result["saldoSekarang"].toString()
+        },
+      );
       // context.pop();
       // widget.changePageMain();
-      context.push('/success');
+      // context.goNamed('/success', params: {"name": });
       // Navigator.of(context).push(
       //   MaterialPageRoute(
       //     builder: (builder) {
@@ -105,7 +113,6 @@ class _TopUpPageState extends State<TopUpPage> {
 
   void _anotherFetch() async {
     getDataNama = await UserApi.getUsersNIPDSuggestion();
-    print(getDataNama[0].nama);
   }
 
   @override

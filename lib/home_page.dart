@@ -4,6 +4,7 @@ import 'package:cashier_tekaja/cash_out.dart';
 import 'package:cashier_tekaja/current_formatter.dart';
 import 'package:cashier_tekaja/widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
@@ -207,10 +208,15 @@ class _HomePageState extends State<HomePage> {
           margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
           child: ElevatedButton.icon(
               onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return CashOutPage("ABDILAH ALI KURNIAWAN", "0920001");
-                }));
+                // Navigator.of(context)
+                //     .push(MaterialPageRoute(builder: (context) {
+                //   return CashOutPage("ABDILAH ALI KURNIAWAN", "0920001");
+                // }));
+
+                context.goNamed(
+                  'cashout',
+                  params: {'name': "ABDILAH ALI KURNIAWAN", 'nipd': "0920001"},
+                );
               },
               icon: Icon(Icons.payment),
               label: Text('Withdraw')),
