@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cashier_tekaja/filter.dart';
+import 'package:cashier_tekaja/widgets/no_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -210,14 +211,21 @@ class _HistoryPageState extends State<HistoryPage> {
                               bottom: mediaQueryHeight * 0.01),
                           child: ListTile(
                             title: Text("${dataToUser[index]['custName']}"),
-                            subtitle: Text(
-                              DateFormat().format(DateTime.parse(
-                                  dataToUser[index]['createdAt'])),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(dataToUser[index]["kelas"]),
+                                Text(
+                                  DateFormat().format(DateTime.parse(
+                                      dataToUser[index]['createdAt'])),
+                                ),
+                              ],
                             ),
                             trailing: Text(
                               "- ${CurrencyFormat.convertToIdr(dataToUser[index]['total'], 0)}",
                               style: const TextStyle(color: Colors.red),
                             ),
+                            isThreeLine: true,
                           ),
                         );
                       } else {
@@ -230,10 +238,15 @@ class _HistoryPageState extends State<HistoryPage> {
                           ),
                           child: ListTile(
                             title: Text("${dataToUser[index]['custName']}"),
-                            subtitle: Text(
-                              DateFormat().format(
-                                DateTime.parse(dataToUser[index]['createdAt']),
-                              ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(dataToUser[index]["kelas"]),
+                                Text(
+                                  DateFormat().format(DateTime.parse(
+                                      dataToUser[index]['createdAt'])),
+                                ),
+                              ],
                             ),
                             trailing: Text(
                               "+ ${CurrencyFormat.convertToIdr(dataToUser[index]['total'], 0)}",
@@ -241,13 +254,14 @@ class _HistoryPageState extends State<HistoryPage> {
                                 color: Colors.green,
                               ),
                             ),
+                            isThreeLine: true,
                           ),
                         );
                       }
                     },
                   );
                 } else {
-                  return Text("${snapshot.error}");
+                  return NoTransaction();
                 }
               }
             },

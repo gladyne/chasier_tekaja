@@ -12,10 +12,14 @@ class UserApi {
     if (response.statusCode == 200) {
       final List data = json.decode(response.body);
 
+      print(data);
+
       return data.map((json) {
+        print(json["kelas"]);
         return User(
           nama: json['nama'],
           nipd: json['nipd'],
+          kelas: json['kelas'],
           pesantren: json['pesantren'],
         );
       }).toList();
@@ -42,6 +46,7 @@ class UserApi {
         return User(
           nama: json['nama'],
           nipd: json['nipd'],
+          kelas: json['kelas'],
           pesantren: json['pesantren'],
         );
       }).where((user) {

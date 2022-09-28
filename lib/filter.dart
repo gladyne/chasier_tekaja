@@ -33,7 +33,12 @@ class _FilterState extends State<Filter> {
         ),
         child: Column(
           children: [
-            const Text("Filter"),
+            SizedBox(
+              height: mediaQueryHeight * 0.01,
+            ),
+            const Text(
+              "Filter",
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -98,19 +103,19 @@ class _FilterState extends State<Filter> {
                 ),
               ),
             ),
-            Container(
-              height: mediaQueryHeight * 0.1,
-              margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Cari berdasarkan kelas",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-              ),
-            ),
+            // Container(
+            //   height: mediaQueryHeight * 0.1,
+            //   margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth / 8),
+            //   child: TextField(
+            //     keyboardType: TextInputType.number,
+            //     decoration: InputDecoration(
+            //       labelText: "Cari berdasarkan kelas",
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(25),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             ElevatedButton(
                 onPressed: () {
                   // if (inputName.text.isEmpty) {
@@ -140,7 +145,12 @@ class _FilterState extends State<Filter> {
                   // widget.filterHandler(startDate, endDate);
                   Navigator.of(context).pop();
                 },
-                child: const Text("Filter"))
+                child: const Text(
+                  "Filter",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ))
           ],
         ),
       ),

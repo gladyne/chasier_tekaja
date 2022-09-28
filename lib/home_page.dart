@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:cashier_tekaja/cash_out.dart';
 import 'package:cashier_tekaja/current_formatter.dart';
 import 'package:cashier_tekaja/widgets/new_transaction.dart';
+import 'package:cashier_tekaja/widgets/no_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -202,25 +202,28 @@ class _HomePageState extends State<HomePage> {
         SizedBox(
           height: mediaQueryHight * 0.015,
         ),
-        // if (data != null)
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
-          child: ElevatedButton.icon(
-              onPressed: () {
-                // Navigator.of(context)
-                //     .push(MaterialPageRoute(builder: (context) {
-                //   return CashOutPage("ABDILAH ALI KURNIAWAN", "0920001");
-                // }));
+        if (data != null)
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: mediaQueryWidth * 0.05),
+            child: ElevatedButton.icon(
+                onPressed: () {
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (context) {
+                  //   return CashOutPage("ABDILAH ALI KURNIAWAN", "0920001");
+                  // }));
 
-                context.goNamed(
-                  'cashout',
-                  params: {'name': "ABDILAH ALI KURNIAWAN", 'nipd': "0920001"},
-                );
-              },
-              icon: Icon(Icons.payment),
-              label: Text('Withdraw')),
-        ),
+                  context.goNamed(
+                    'cashout',
+                    params: {'name': data['nama'], 'nipd': data['nipd']},
+                  );
+                },
+                icon: Icon(Icons.payment, color: Colors.white),
+                label: Text(
+                  'Withdraw',
+                  style: TextStyle(color: Colors.white),
+                )),
+          ),
         Container(
           margin: EdgeInsets.only(left: mediaQueryWidth * 0.05),
           child: const FittedBox(
@@ -243,65 +246,88 @@ class _HomePageState extends State<HomePage> {
               } else {
                 if (snapshot.hasData) {
                   List<dynamic> data = snapshot.data as List<dynamic>;
-                  return ListView.builder(
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      if (data[data.length - index - 1]['isCO']) {
-                        return Card(
-                          elevation: 6,
-                          margin: EdgeInsets.only(
-                            left: mediaQueryWidth * 0.05,
-                            right: mediaQueryWidth * 0.05,
-                            bottom: mediaQueryHight * 0.01,
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              "${data[index]['custName']}",
+                  int lengthOfData = data.length;
+
+                  if (lengthOfData == 0) {
+                    return NoTransaction();
+                  } else {
+                    return ListView.builder(
+                      itemCount: lengthOfData < 4 ? data.length : 4,
+                      itemBuilder: (context, index) {
+                        if (data[data.length - index - 1]['isCO']) {
+                          return Card(
+                            elevation: 6,
+                            margin: EdgeInsets.only(
+                              left: mediaQueryWidth * 0.05,
+                              right: mediaQueryWidth * 0.05,
+                              bottom: mediaQueryHight * 0.01,
                             ),
-                            subtitle: Text(
-                              DateFormat().format(
-                                DateTime.parse(
-                                    data[data.length - index - 1]['createdAt']),
+                            child: ListTile(
+                              title: Text(
+                                "${data[data.length - index - 1]['custName']}",
                               ),
-                            ),
-                            trailing: Text(
-                              "- ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
-                              style: const TextStyle(
-                                color: Colors.red,
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data[data.length - index - 1]["kelas"]),
+                                  Text(
+                                    DateFormat().format(
+                                      DateTime.parse(
+                                          data[data.length - index - 1]
+                                              ['createdAt']),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return Card(
-                          elevation: 6,
-                          margin: EdgeInsets.only(
-                            left: mediaQueryWidth * 0.05,
-                            right: mediaQueryWidth * 0.05,
-                            bottom: mediaQueryHight * 0.01,
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              "${data[data.length - index - 1]['custName']}",
-                            ),
-                            subtitle: Text(
-                              DateFormat().format(
-                                DateTime.parse(
-                                    data[data.length - index - 1]['createdAt']),
+                              trailing: Text(
+                                "- ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                ),
                               ),
+                              isThreeLine: true,
                             ),
-                            trailing: Text(
-                              "+ ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
-                              style: const TextStyle(
-                                color: Colors.green,
+                          );
+                        } else {
+                          return Card(
+                            elevation: 6,
+                            margin: EdgeInsets.only(
+                              left: mediaQueryWidth * 0.05,
+                              right: mediaQueryWidth * 0.05,
+                              bottom: mediaQueryHight * 0.01,
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                "${data[data.length - index - 1]['custName']}",
                               ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data[data.length - index - 1]["kelas"]),
+                                  Text(
+                                    DateFormat().format(
+                                      DateTime.parse(
+                                          data[data.length - index - 1]
+                                              ['createdAt']),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Text(
+                                "+ ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                ),
+                              ),
+                              isThreeLine: true,
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  );
+                          );
+                        }
+                      },
+                    );
+                  }
                 } else {
+                  print("no data");
                   return Text(
                     "${snapshot.error}",
                   );

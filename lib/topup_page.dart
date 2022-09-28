@@ -38,9 +38,11 @@ class _TopUpPageState extends State<TopUpPage> {
         User(
           nama: json['nama'],
           nipd: json['nipd'],
+          kelas: json['kelas'],
           pesantren: json['pesantren'],
         );
       }).toList() as List<User>;
+      print(getDataNama);
 
       //  . where((user) {
       //   final nipdToLower = user.nipd.toLowerCase();
@@ -113,13 +115,15 @@ class _TopUpPageState extends State<TopUpPage> {
 
   void _anotherFetch() async {
     getDataNama = await UserApi.getUsersNIPDSuggestion();
+    print("test");
+    print(getDataNama);
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _fetchData();
+    // _fetchData();
     _anotherFetch();
     // print(getDataNama);
   }
@@ -163,6 +167,7 @@ class _TopUpPageState extends State<TopUpPage> {
                 //       .toLowerCase()
                 //       .contains(textEditingValue.text.toLowerCase());
                 // });
+                print(getDataNama);
                 return getDataNama.where((element) {
                   return element.nama
                       .toLowerCase()
@@ -182,7 +187,6 @@ class _TopUpPageState extends State<TopUpPage> {
                     labelText: "Isi Data Santri",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
-                      borderSide: BorderSide(),
                     ),
                   ),
                 );
@@ -208,6 +212,7 @@ class _TopUpPageState extends State<TopUpPage> {
                             },
                             child: ListTile(
                               title: Text("${option.nama}"),
+                              subtitle: Text("${option.kelas}"),
                               trailing: Text("${option.nipd}"),
                             ),
                           );

@@ -1,7 +1,12 @@
 class User {
   final String nama;
-  final String pesantren;
   final String nipd;
+  final String pesantren;
+  final String kelas;
 
-  User({required this.nama, required this.pesantren, required this.nipd});
+  User(
+      {required this.nama,
+      required this.nipd,
+      required this.kelas,
+      required this.pesantren});
 }
