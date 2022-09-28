@@ -37,8 +37,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<dynamic>> _getRecentHistory() async {
-    final url =
-        Uri.parse("https://dompetsantri.herokuapp.com/api/transaction?limit=4");
+    final url = Uri.parse("https://dompetsantri.herokuapp.com/api/transaction");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final transactionData = json.decode(response.body);
@@ -251,10 +250,11 @@ class _HomePageState extends State<HomePage> {
                   if (lengthOfData == 0) {
                     return NoTransaction();
                   } else {
+                    print(data);
                     return ListView.builder(
-                      itemCount: lengthOfData < 4 ? data.length : 4,
+                      itemCount: lengthOfData < 4 ? lengthOfData : 4,
                       itemBuilder: (context, index) {
-                        if (data[data.length - index - 1]['isCO']) {
+                        if (data[index]['isCO']) {
                           return Card(
                             elevation: 6,
                             margin: EdgeInsets.only(
@@ -264,23 +264,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: ListTile(
                               title: Text(
-                                "${data[data.length - index - 1]['custName']}",
+                                "${data[index]['custName']}",
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data[data.length - index - 1]["kelas"]),
+                                  Text(data[index]["kelas"]),
                                   Text(
                                     DateFormat().format(
-                                      DateTime.parse(
-                                          data[data.length - index - 1]
-                                              ['createdAt']),
+                                      DateTime.parse(data[index]['createdAt']),
                                     ),
                                   ),
                                 ],
                               ),
                               trailing: Text(
-                                "- ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
+                                "- ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
                                 style: const TextStyle(
                                   color: Colors.red,
                                 ),
@@ -298,23 +296,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: ListTile(
                               title: Text(
-                                "${data[data.length - index - 1]['custName']}",
+                                "${data[index]['custName']}",
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(data[data.length - index - 1]["kelas"]),
+                                  Text(data[index]["kelas"]),
                                   Text(
                                     DateFormat().format(
-                                      DateTime.parse(
-                                          data[data.length - index - 1]
-                                              ['createdAt']),
+                                      DateTime.parse(data[index]['createdAt']),
                                     ),
                                   ),
                                 ],
                               ),
                               trailing: Text(
-                                "+ ${CurrencyFormat.convertToIdr(data[data.length - index - 1]['total'], 0)}",
+                                "+ ${CurrencyFormat.convertToIdr(data[index]['total'], 0)}",
                                 style: const TextStyle(
                                   color: Colors.green,
                                 ),

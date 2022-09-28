@@ -27,9 +27,9 @@ class SuccessPayment extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
-            height: mediaQueryHeight / 2,
+            height: mediaQueryHeight / 2.5,
             margin: EdgeInsets.only(
-              top: mediaQueryHeight * 0.15,
+              top: mediaQueryHeight * 0.1,
               left: mediaQueryWidth * 0.1,
               right: mediaQueryWidth * 0.1,
             ),
@@ -40,11 +40,11 @@ class SuccessPayment extends StatelessWidget {
                 children: [
                   Image.asset('assets/images/checklist.jpeg'),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     color: Color.fromRGBO(46, 204, 113, 1),
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(5),
                     child: Column(
                       children: [
                         Text(
@@ -54,17 +54,11 @@ class SuccessPayment extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
                         Text(
                           "Sebesar : ${paidRpFormat}",
                           style: TextStyle(
                             color: Colors.white,
                           ),
-                        ),
-                        SizedBox(
-                          height: 5,
                         ),
                         FittedBox(
                           child: Text(
@@ -74,21 +68,15 @@ class SuccessPayment extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
                         Text(
                           "Kelas",
                           style: TextStyle(
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
                         FittedBox(
                           child: Text(
-                            "Total Saldomu sekarang: $totalRpFormat",
+                            "Total saldo: $totalRpFormat",
                             style: TextStyle(
                               color: Colors.white,
                             ),
@@ -98,7 +86,7 @@ class SuccessPayment extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Text(
                     "Terimakasih telah melakukan transaksi pada Dompet Santri",

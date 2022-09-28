@@ -39,9 +39,10 @@ class _HistoryPageState extends State<HistoryPage> {
   void _searchHistory(String query) {
     final sugestion = data.where((history) {
       final name = history['custName'].toLowerCase();
+      final kelas = history['kelas'].toLowerCase();
       final input = query.toLowerCase();
 
-      return name.contains(input);
+      return name.contains(input) || kelas.contains(input);
     }).toList();
 
     setState(() {
